@@ -12,12 +12,14 @@ class Client:
     def __init__(self, api_key, api_secret,
                  api_url=DEFAULT_API_URL,
                  download_dir='.',
-                 request_callback=None):
+                 request_callback=None,
+                 timeout=None):
         self.api_url = api_url
         self.api_key = api_key
         self.api_secret = api_secret
         self.download_dir = download_dir
         self.request_callback = request_callback
+        self.timeout = timeout
 
     def create_auth_variables(self):
         timestamp = str(int(time.time()))
@@ -61,7 +63,8 @@ class Client:
         request_function = getattr(requests, method.lower())
         response = request_function(absolute_url,
                                     params=url_parameters,
-                                    files=files)
+                                    files=files,
+                                    timeout=self.timeout)
 
         if (response.headers.get('content-disposition', '').
                 startswith('attachment;')):
